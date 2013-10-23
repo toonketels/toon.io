@@ -1,0 +1,18 @@
+{
+  "uuid": "93778707-23d9-4711-bf5b-f2a07ab04773",
+  "author": "Toon Ketels",
+  "title": "Tools used to create data visualization Apps for Antwerp",
+  "alias": "apps-for-antwerp-data-visualization",
+  "type": "project",
+  "tags": [
+    "visualization"
+  ],
+  "content": "<p>We used a couple of tools to create our data visualization for <a href=\"http://knife-io.github.com/Apps-for-Antwerp/\">Apps for Antwerp</a>.</p>\n<h2>d3js</h2>\n<p><a href=\"http://d3js.org/\">D3js</a> played a mayor role. It is a JavaScript data visualization library with just the right amount of functionality to create visualizations. It does not try to do too much by providing configurable charts but rather gives you the building blocks necessary to create them.</p>\n<h2>Jade</h2>\n<p>Although we did not write much html, the couple of lines we wrote were generated using <a href=\"http://jade-lang.com/\">jade</a>. I love the DRY, indentation based syntax of jade.</p>\n<h2>Sass</h2>\n<p>Css is generated with <a href=\"http://sass-lang.com/\">sass</a>. I prefer the sass syntax over scss as it&#39;s more concise.</p>\n<h2>Make</h2>\n<p>Both jade and sass needs to be compiled into html and css. We can do so via the command line. To speed up the process, we created a makefile with different commands in it the compile both at the same time. In the future, we might use <a href=\"http://gruntjs.com/\">grunt</a> instead of <a href=\"http://en.wikipedia.org/wiki/Make_(software\">make</a>) though.</p>\n<h2>Foundation</h2>\n<p><a href=\"http://foundation.zurb.com/\">Foundation</a> is used for layout, typography and navigational elements. It&#39;s a front-end framework using sass.</p>\n<h2>jQuery</h2>\n<p>Although we did not make much use of it, Foundation requires <a href=\"http://jquery.com/\">jQuery</a> for some functionality so we included it. D3js also offers selector and animator functions and they are more appropriate for data visualizations.</p>\n<h2>node-csv</h2>\n<p>Preparing the data is an important step in creating data visualizations. We used <a href=\"http://www.adaltas.com/projects/node-csv/\">node-csv</a> in JavaScript scripts executed from the command line to parse and create csv files. This allowed us to combine several csv files and filter out data.</p>\n<h2>node.js express server</h2>\n<p>The final result is hosted as <a href=\"http://pages.github.com/\">gh-pages</a> on Github. During the development we needed a server to serve the csv file. <a href=\"http://expressjs.com/\">Express node.js server</a> was used for that reason. A simpler solution would be to use <a href=\"https://github.com/cloudhead/node-static\">node static</a> or <a href=\"http://httpd.apache.org/\">apache</a> to serve the files.</p>\n",
+  "teaser": "<p>We used a couple of tools to create our data visualization for <a href=\"http://knife-io.github.com/Apps-for-Antwerp/\">Apps for Antwerp</a>.</p>\n<h2>d3js</h2>\n<p><a href=\"http://d3js.org/\">D3js</a> played a mayor role. It is a JavaScript data visualization library with just the right amount of functionalit...</p>",
+  "createDate": "2012-12-22T00:00:00+01:00",
+  "updateDate": "2012-12-22T00:00:00+01:00",
+  "createDateFormatted": "2012.12.22",
+  "updateDateFormatted": "2012.12.22",
+  "createDateTimestamp": "1356130800",
+  "updateDateTimestamp": "1356130800"
+}

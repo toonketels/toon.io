@@ -1,0 +1,19 @@
+{
+  "uuid": "ab6659e3-3e28-4fe2-941f-6da5b1f84682",
+  "author": "Toon Ketels",
+  "title": "Backbone.js, no more JavaScript spaghetti code",
+  "alias": "backbonejs-no-more-javascript-spaghetti-code",
+  "type": "talk",
+  "tags": [
+    "backbonejs",
+    "drupalJam"
+  ],
+  "content": "<p>As backbone.js is committed to drupal 8, I gave an introduction talk about backbone at drupalJam in the the Netherlands.</p>\n<p>It&#39;s all about Backbone.js fundamentals with models, collections, views and their interaction (change event - rendering), to really understand what&#39;s going and how it helps manage JavaScript application complexity.</p>\n<p>Checkout the <a href=\"https://speakerdeck.com/toonketels/introducing-backbone-dot-js\">presentation slides</a> and <a href=\"https://github.com/toonketels/backbone-presentation-demo\">demo code</a>.</p>\n",
+  "teaser": "<p>As backbone.js is committed to drupal 8, I gave an introduction talk about backbone at drupalJam in the the Netherlands.</p>\n<p>It&#39;s all about Backbone.js fundamentals with models, collections, views and...</p>",
+  "createDate": "2013-05-17T00:00:00+02:00",
+  "updateDate": "2013-05-17T00:00:00+02:00",
+  "createDateFormatted": "2013.05.17",
+  "updateDateFormatted": "2013.05.17",
+  "createDateTimestamp": "1368741600",
+  "updateDateTimestamp": "1368741600"
+}

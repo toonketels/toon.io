@@ -1,0 +1,19 @@
+{
+  "uuid": "ae599d6e-56c3-4e95-93dd-09a26bd9f200",
+  "author": "Toon Ketels",
+  "title": "Introducing Grunt.js, the JavaScript Task Runner",
+  "alias": "introducing-gruntjs-the-javascript-task-runner",
+  "type": "talk",
+  "tags": [
+    "gruntjs",
+    "nodejs user group"
+  ],
+  "content": "<p>Together with <a href=\"https://twitter.com/anthonyringoet\">Anthony Ringoet</a>, I presented about <a href=\"http://gruntjs.com\">Gruntjs</a> at the <a href=\"http://lanyrd.com/2013/njug-be/schedule\">Node.js User Group</a> in Antwerp.</p>\n<p>We gave a practical introduction to using Grunt.js. Once the basics (installing, using) were adressed, we took on some more advanced, in depth topics such as tasks, &quot;magic&quot; config attributes and project scaffolding.</p>\n<p>Checkout the <a href=\"https://speakerdeck.com/toonketels/introducing-grunt-dot-js-the-javascript-task-runner\">presentation slides</a> and the <a href=\"https://github.com/toonketels/grunt-presentation-demo\">demo code</a>.</p>\n",
+  "teaser": "<p>Together with <a href=\"https://twitter.com/anthonyringoet\">Anthony Ringoet</a>, I presented about <a href=\"http://gruntjs.com\">Gruntjs</a> at the <a href=\"http://lanyrd.com/2013/njug-be/schedule\">Node.js User Group</a> in Antwerp.</p>\n<p>We gave a practical introduction to using Grunt.js. Once the basics (installing, using) were adressed, we...</p>",
+  "createDate": "2013-05-15T00:00:00+02:00",
+  "updateDate": "2013-05-15T00:00:00+02:00",
+  "createDateFormatted": "2013.05.15",
+  "updateDateFormatted": "2013.05.15",
+  "createDateTimestamp": "1368568800",
+  "updateDateTimestamp": "1368568800"
+}

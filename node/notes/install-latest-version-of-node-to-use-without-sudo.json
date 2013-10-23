@@ -1,0 +1,18 @@
+{
+  "uuid": "de29f755-12df-4b55-9503-7c09d27df46e",
+  "author": "Toon Ketels",
+  "title": "Install latest version of node to use without sudo",
+  "alias": "install-latest-version-of-node-to-use-without-sudo",
+  "type": "note",
+  "tags": [
+    "nodejs"
+  ],
+  "content": "<p>Explains the steps I followed to install node from source on Ubuntu server.</p>\n<p>This is just kept as a reference, jump to the resources to get the link to a more detailed article.</p>\n<h2>Ensure we can build/curl</h2>\n<pre><code>// Update package manager\nsudo apt-get update\n\n// Install compiler\nsudo apt-get install build-essential\n\n// Get curl\nsudo apt-get install curl</code></pre>\n<h2>Install node and npm</h2>\n<pre><code>// Add ~/local/bin to your path\necho &#39;export PATH=$HOME/local/bin:$PATH&#39; &gt;&gt; ~/.bashrc\nsource ~/.bashrc\n\n// Create two new directories\nmkdir ~/local ~/node-latest-install\n\n// Download and untar nodejs in latest install folder\ncd ~/node-latest-install\ncurl http://nodejs.org/dist/node-latest.tar.gz | tar xz --strip-components=1\n\n// Start installation limited to local user\n./configure --prefix=~/local\nmake install\n\n// Download npm\ncurl https://npmjs.org/install.sh | sh</code></pre>\n<h2>Resouces</h2>\n<ul>\n<li><a href=\"https://www.digitalocean.com/community/articles/how-to-install-an-upstream-version-of-node-js-on-ubuntu-12-04\">Digital Ocean article the workflow is detailed</a></li>\n<li><a href=\"https://gist.github.com/isaacs/579814\">6 different ways to install node without having to use sudo</a></li>\n<li><a href=\"http://joyent.com/blog/installing-node-and-npm\">More detailed article about installing node by joyent</a></li>\n</ul>\n",
+  "teaser": "<p>Explains the steps I followed to install node from source on Ubuntu server.</p>\n<p>This is just kept as a reference, jump to the resources to get the link to a more detailed article.</p>\n<h2>Ensure we can build/curl</h2>...",
+  "createDate": "2013-03-15T00:00:00+01:00",
+  "updateDate": "2013-03-15T00:00:00+01:00",
+  "createDateFormatted": "2013.03.15",
+  "updateDateFormatted": "2013.03.15",
+  "createDateTimestamp": "1363302000",
+  "updateDateTimestamp": "1363302000"
+}

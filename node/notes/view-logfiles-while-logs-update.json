@@ -1,0 +1,18 @@
+{
+  "uuid": "e1586e84-f196-499f-8806-1adda0f1f4ae",
+  "author": "Toon Ketels",
+  "title": "View logfiles while logs update",
+  "alias": "view-logfiles-while-logs-update",
+  "type": "note",
+  "tags": [
+    "cli"
+  ],
+  "content": "<p>To view logfiles while they update do:</p>\n<pre><code>tail -f path/to/logfile_name</code></pre>\n<p>Thanks <a href=\"http://twitter.com/Yiroon\">Jeroen</a> for the tip.</p>\n",
+  "teaser": "<p>To view logfiles while they update do:</p>\n<pre><code>tail -f path/to/logfile_name</code></pre>\n<p>Thanks <a href=\"http://twitter.com/Yiroon\">Jeroen</a> for the tip.</p>\n",
+  "createDate": "2012-09-05T00:00:00+02:00",
+  "updateDate": "2012-09-05T00:00:00+02:00",
+  "createDateFormatted": "2012.09.05",
+  "updateDateFormatted": "2012.09.05",
+  "createDateTimestamp": "1346796000",
+  "updateDateTimestamp": "1346796000"
+}

@@ -1,0 +1,302 @@
+[
+  {
+    "uuid": "8f8d85d9-7138-42c2-aa77-44dd78e4837b",
+    "author": "Toon Ketels",
+    "title": "Apps for Antwerp submisson: visualizing Antwerp's districts",
+    "alias": "apps-for-antwerp-visualizing-antwerps-districts",
+    "type": "article",
+    "tags": [
+      "d3js",
+      "visualization"
+    ],
+    "content": "<p>We submitted a small data-visualization app for Antwerp&#39;s first <a href=\"http://opendata.antwerpen.be/nieuws/apps-antwerp\">Apps for Antwerp</a> event. A challenge for developers to come up with useful applications or visualizations using the city’s data.</p>\n<p>Our app visualized Antwerp&#39;s nine districts on different parameters. We settled on a minimal donut chart, <a href=\"http://knife-io.github.com/Apps-for-Antwerp/\">see for yourself</a>.</p>\n<h2>A couple of principles that guided our design</h2>\n<h3>Incrementally display data</h3>\n<p>The visualization starts small with only a donut chart rolling out. By starting with a single item and incrementally adding items to the canvas one at a time, we guide the user&#39;s attention. The most important item is displayed first. Lesser items fade into the canvas later on.</p>\n<h3>Display little information to encourage user exploration</h3>\n<p>When everything has been displayed on the screen, only a disc and a form is displayed... nothing happens, not much information is conveyed. We do this to encourage users to start clicking around and exploring the graph themselves.</p>\n<h3>Remove all unnecessary information</h3>\n<p>Instead of using a map to display information, we chose a donut chart. This way, the user does not process unnecessary information like shape, location compared to other districts.</p>\n<p>All information has been stripped and the user can only digest information we want them to process.</p>\n<h3>Use movement to communicate change</h3>\n<p>By selecting different parameters, the area of a district will increase or decrease smoothly. We are hardwired to detect movement so it&#39;s easy to identify if something get&#39;s smaller or bigger.</p>\n<p>And because the user selects the parameters to change herself, she can select from what to what the movement occurs.</p>\n",
+    "teaser": "<p>We submitted a small data-visualization app for Antwerp&#39;s first <a href=\"http://opendata.antwerpen.be/nieuws/apps-antwerp\">Apps for Antwerp</a> event. A challenge for developers to come up with useful applications or visualizations using the city’s data.</p>\n<p>Our ...</p>",
+    "createDate": "2012-12-16T00:00:00+01:00",
+    "updateDate": "2012-12-16T00:00:00+01:00",
+    "createDateFormatted": "2012.12.16",
+    "updateDateFormatted": "2012.12.16",
+    "createDateTimestamp": "1355612400",
+    "updateDateTimestamp": "1355612400"
+  },
+  {
+    "uuid": "b6da7dc5-57b5-4c19-b4e3-5b140df8b08e",
+    "author": "Toon Ketels",
+    "title": "Extend Fail2ban to send text messages every time a user/bot gets banned",
+    "alias": "fail2ban-send-sms-user-banned",
+    "type": "article",
+    "tags": [
+      "fail2ban",
+      "Twilio"
+    ],
+    "content": "<p>To prevent scripts from brute forcing their way into my VPS via SSH I use <a href=\"http://www.fail2ban.org\">Fail2ban</a>. It&#39;s a tool that checks the logs for password failures and set IP rules that blocks that user&#39;s IP for a given time.</p>\n<p>I have it already set up to send emails (one of the default actions), but I wanted it to send me a text message every time an IP gets banned.</p>\n<p>Fail2ban does not ship with such an action. Fortunately, it&#39;s not hard to create one.</p>\n<h2>How to extend fail2ban with custom actions?</h2>\n<p>It&#39;s easy to extend Fail2ban with custom actions. You only need to do two things:\n1. Create a new action in the /etc/fail2/ban/actions.d directory\n2. Configure jail.local to use that action</p>\n<h2>Create new action in actions.d</h2>\n<p>The easiest way to create a new action is to copy dummy.conf to <em>new-action.conf</em> and edit it. You&#39;ll find the different &quot;hooks&quot; you can use to execute your commands. Variables are passed via &quot;&lt;variable&gt;&quot; syntax.</p>\n<p>Below you&#39;ll find my sms.conf.</p>\n<pre><code>#\n# Author: Toon Ketels\n#\n# $Revision$\n#\n\n[Definition]\n\n# Option:  actionstart\n# Notes.:  command executed once at the start of Fail2Ban.\n# Values:  CMD\n#\nactionstart = /home/all/scripts/fail2ban-sms.sh start\n\n# Option:  actionstop\n# Notes.:  command executed once at the end of Fail2Ban\n# Values:  CMD\n#\nactionstop = /home/all/scripts/fail2ban-sms.sh stop\n\n# Option:  actioncheck\n# Notes.:  command executed once before each actionban command\n# Values:  CMD\n#\nactioncheck =\n\n# Option:  actionban\n# Notes.:  command executed when banning an IP. Take care that the\n#          command is executed with Fail2Ban user rights.\n# Tags:    &lt;ip>  IP address\n#          &lt;failures>  number of failures\n#          &lt;time>  unix timestamp of the ban time\n# Values:  CMD\n#\nactionban = /home/all/scripts/fail2ban-sms.sh ban &lt;ip>\n\n# Option:  actionunban\n# Notes.:  command executed when unbanning an IP. Take care that the\n#          command is executed with Fail2Ban user rights.\n# Tags:    &lt;ip>  IP address\n#          &lt;failures>  number of failures\n#          &lt;time>  unix timestamp of the ban time\n# Values:  CMD\n#\nactionunban = /home/all/scripts/fail2ban-sms.sh unban &lt;ip>\n\n[Init]\n\ninit = 'Custom startup message</code></pre>\n<p>Above you see we don&#39;t actually send text messages directly from within this file, but invoke the script located at /home/all/scripts/fail2ban-sms.sh. We use the &lt;ip&gt; variable to be send in the text message and pass it as an argument to the script. </p>\n<p>Using scripts makes it easier to change the texting implementation later on (or when we would like to change provider).</p>\n<p>Before we look into the text messaging script, let&#39;s activate the command.</p>\n<h2>Config fail.local to execute action</h2>\n<p>Configure Fail2ban by copying jail.conf to jail.local and edit the file. We want texting whenever someone tries to bruteforce ssh. So we add &quot;sms&quot; to the list of actions in the ssh section like below.</p>\n<pre><code>#\n# in /etc/fail2ban/jail.local.\n#\n# Optionally you may override any other parameter (e.g. banaction,\n# action, port, logpath, etc) in that section within jail.local\n\n[ssh]\n\nenabled  = true\nport     = ssh\nfilter   = sshd\nlogpath  = /var/log/auth.log\nmaxretry = 6\naction = mail-whois[name=SSH, dest=my.email@gmail.com]\n         sms</code></pre>\n<h2>Texting using twilio</h2>\n<p><a href=\"https://www.twilio.com/\">Twilio&#39;s API</a> makes it easy to send sms&#39;s. Just POST to their api to text. Below you find the script used to perform the request to their API.</p>\n<pre><code>#!/bin/bash\n\n# Sends text messages using twilio api\n# to alert webmaster of banning.\n#\n# Requires one argument, one of the following:\n#  start\n#  stop\n#  ban\n#  unban\n#\n# Optional second argument: IP for ban/unban\n\n\n\n# Include file with the following content:\n#   sid=&lt;twilio account sid>\n#   token=&lt;twilio auth token>\n#   from=&lt;phone number>\n#   to=&lt;phone number>\nsource secret.conf\n\n\n\n# Display usage information\nfunction show_usage {\n  echo \"Usage: $0 action &lt;ip>\"\n  echo \"Where action is start, stop, ban, unban\"\n  echo \"and ip is optional passed to ban, unban\"\n  exit\n}\n\n\n\n# Actually send sms\n# Expects the sms content (body) to be passed\n# as argument.\nfunction send_sms {\n  /usr/bin/curl -X POST \"https://api.twilio.com/2010-04-01/Accounts/$sid/SMS/Messages.json\" -d \"From=$from\" -d \"To=$to\" -d \"Body=$1\" -u \"$sid:$token\" >> '/home/all/log/fail2ban-sms.log'    \n  exit\n}\n\n\n\n# Check for script arguments\nif [ $# -lt 1 ]\nthen\n  show_usage\nfi\n\n\n\n# Take action depending on argument\nif [ \"$1\" = 'start' ]\nthen\n  message='Fail2ban+just+started.'\n  send_sms $message\nelif [ \"$1\" = 'stop' ]\nthen\n  message='Fail2ban+just+stopped.'\n  send_sms $message\nelif [ \"$1\" = 'ban' ]\nthen\n  message=$([ \"$2\" != '' ] &amp;&amp; echo \"Fail2ban+just+banned+$2\" || echo 'Fail2ban+just+banned+an+ip.' )\n  send_sms $message\nelif [ \"$1\" = 'unban' ]\nthen\n  message=$([ \"$2\" != '' ] &amp;&amp; echo \"Fail2ban+just+unbanned+$2\" || echo \"Fail2ban+just+unbanned+an+ip.\" )\n  send_sms $message\nelse\n  show_usage</code></pre>\n<p>The script expects a secret.conf in the same directory to read the Twilio authentication data and phone numbers from. The output of the requests are appended to a logfile in /home/all/log/fail2ban-sms.log.</p>\n<h2>Repo</h2>\n<p>You find the config file and script in <a href=\"https://github.com/toonketels/fail2ban-sms\">github repo</a>.</p>\n<h2>Resources</h2>\n<ul>\n<li><a href=\"http://www.fail2ban.org\">www.fail2ban.org</a></li>\n<li><a href=\"https://www.twilio.com\">www.twilio.com</a></li>\n<li><a href=\"https://github.com/toonketels/fail2ban-sms\">github.com/toonketels/fail2ban-sms</a></li>\n<li><a href=\"http://blog.redbranch.net/2013/02/28/fail2ban-custom-action\">blog.redbranch.net/2013/02/28/fail2ban-custom-action</a></li>\n</ul>\n",
+    "teaser": "<p>To prevent scripts from brute forcing their way into my VPS via SSH I use <a href=\"http://www.fail2ban.org\">Fail2ban</a>. It&#39;s a tool that checks the logs for password failures and set IP rules that blocks that user&#39;s IP for a giv...</p>",
+    "createDate": "2013-03-23T00:00:00+01:00",
+    "updateDate": "2013-03-23T00:00:00+01:00",
+    "createDateFormatted": "2013.03.23",
+    "updateDateFormatted": "2013.03.23",
+    "createDateTimestamp": "1363993200",
+    "updateDateTimestamp": "1363993200"
+  },
+  {
+    "uuid": "73b07462-8239-4c9d-b843-8594ff8828ef",
+    "author": "Toon Ketels",
+    "title": "Get directories size in linux",
+    "alias": "get-directories-size-in-linux",
+    "type": "note",
+    "tags": [
+      "cli"
+    ],
+    "content": "<p>To find out the sizes of the different directories in our current location do:</p>\n<pre><code>du -csh *</code></pre>\n<p>Which stands for:\n<em> du: disk usage\n</em> c: grand total, <em>might think of it as &quot;compute total&quot;</em>\n<em> s: summary\n</em> h: human readable</p>\n",
+    "teaser": "<p>To find out the sizes of the different directories in our current location do:</p>\n<pre><code>du -csh *</code></pre>\n<p>Which stands for:\n<em> du: disk usage\n</em> c: grand total, <em>might think of it as &quot;compute total&quot;</em>\n<em> s: summary\n</em> </p>",
+    "createDate": "2013-03-15T00:00:00+01:00",
+    "updateDate": "2013-03-15T00:00:00+01:00",
+    "createDateFormatted": "2013.03.15",
+    "updateDateFormatted": "2013.03.15",
+    "createDateTimestamp": "1363302000",
+    "updateDateTimestamp": "1363302000"
+  },
+  {
+    "uuid": "ade2ead9-cabc-4be0-8b97-d727b8b23915",
+    "author": "Toon Ketels",
+    "title": "How to find out which ports are in use",
+    "alias": "how-to-find-out-which-ports-are-in-use",
+    "type": "note",
+    "tags": [
+      "cli"
+    ],
+    "content": "<p>To list all the ports in use on your machine, do:</p>\n<pre><code>netstat -anf inet</code></pre>\n<p>To see which process is using a specific port, do:</p>\n<pre><code>// sudo lsof -i :&lt;portnumber>\nsudo lsof -i :80</code></pre>\n<p>The above will list all processes using port 80. To kill a process, do:</p>\n<pre><code>// kill -9 &lt;processid>\nkill -9 51377</code></pre>\n",
+    "teaser": "<p>To list all the ports in use on your machine, do:</p>\n<pre><code>netstat -anf inet</code></pre>\n<p>To see which process is using a specific port, do:</p>\n<pre><code>// sudo lsof -i :&lt;portnumber>\nsudo lsof -i :80</code></pre>\n<p>The above will list all process</p>",
+    "createDate": "2012-07-30T00:00:00+02:00",
+    "updateDate": "2012-07-30T00:00:00+02:00",
+    "createDateFormatted": "2012.07.30",
+    "updateDateFormatted": "2012.07.30",
+    "createDateTimestamp": "1343599200",
+    "updateDateTimestamp": "1343599200"
+  },
+  {
+    "uuid": "bc3afe75-d3b7-4d39-8ca1-6fdafba7b533",
+    "author": "Toon Ketels",
+    "title": "How to remove all files but one from command line?",
+    "alias": "how-to-remove-all-files-but-one-from-command-line",
+    "type": "note",
+    "tags": [
+      "cli"
+    ],
+    "content": "<p>To remove all files but a given one do:</p>\n<pre><code>find . -type f -not -name &quot;application.make&quot; | xargs rm</code></pre>\n<p>To also remove the directories do:</p>\n<pre><code>find . -not -name &quot;application.make&quot; | xargs rm -r</code></pre>\n",
+    "teaser": "<p>To remove all files but a given one do:</p>\n<pre><code>find . -type f -not -name &quot;application.make&quot; | xargs rm</code></pre>\n<p>To also remove the directories do:</p>\n<pre><code>find . -not -name &quot;application.make&quot; | xargs rm -</code></pre>",
+    "createDate": "2012-09-15T00:00:00+02:00",
+    "updateDate": "2012-09-15T00:00:00+02:00",
+    "createDateFormatted": "2012.09.15",
+    "updateDateFormatted": "2012.09.15",
+    "createDateTimestamp": "1347660000",
+    "updateDateTimestamp": "1347660000"
+  },
+  {
+    "uuid": "de29f755-12df-4b55-9503-7c09d27df46e",
+    "author": "Toon Ketels",
+    "title": "Install latest version of node to use without sudo",
+    "alias": "install-latest-version-of-node-to-use-without-sudo",
+    "type": "note",
+    "tags": [
+      "nodejs"
+    ],
+    "content": "<p>Explains the steps I followed to install node from source on Ubuntu server.</p>\n<p>This is just kept as a reference, jump to the resources to get the link to a more detailed article.</p>\n<h2>Ensure we can build/curl</h2>\n<pre><code>// Update package manager\nsudo apt-get update\n\n// Install compiler\nsudo apt-get install build-essential\n\n// Get curl\nsudo apt-get install curl</code></pre>\n<h2>Install node and npm</h2>\n<pre><code>// Add ~/local/bin to your path\necho &#39;export PATH=$HOME/local/bin:$PATH&#39; &gt;&gt; ~/.bashrc\nsource ~/.bashrc\n\n// Create two new directories\nmkdir ~/local ~/node-latest-install\n\n// Download and untar nodejs in latest install folder\ncd ~/node-latest-install\ncurl http://nodejs.org/dist/node-latest.tar.gz | tar xz --strip-components=1\n\n// Start installation limited to local user\n./configure --prefix=~/local\nmake install\n\n// Download npm\ncurl https://npmjs.org/install.sh | sh</code></pre>\n<h2>Resouces</h2>\n<ul>\n<li><a href=\"https://www.digitalocean.com/community/articles/how-to-install-an-upstream-version-of-node-js-on-ubuntu-12-04\">Digital Ocean article the workflow is detailed</a></li>\n<li><a href=\"https://gist.github.com/isaacs/579814\">6 different ways to install node without having to use sudo</a></li>\n<li><a href=\"http://joyent.com/blog/installing-node-and-npm\">More detailed article about installing node by joyent</a></li>\n</ul>\n",
+    "teaser": "<p>Explains the steps I followed to install node from source on Ubuntu server.</p>\n<p>This is just kept as a reference, jump to the resources to get the link to a more detailed article.</p>\n<h2>Ensure we can build/curl</h2>...",
+    "createDate": "2013-03-15T00:00:00+01:00",
+    "updateDate": "2013-03-15T00:00:00+01:00",
+    "createDateFormatted": "2013.03.15",
+    "updateDateFormatted": "2013.03.15",
+    "createDateTimestamp": "1363302000",
+    "updateDateTimestamp": "1363302000"
+  },
+  {
+    "uuid": "e1586e84-f196-499f-8806-1adda0f1f4ae",
+    "author": "Toon Ketels",
+    "title": "View logfiles while logs update",
+    "alias": "view-logfiles-while-logs-update",
+    "type": "note",
+    "tags": [
+      "cli"
+    ],
+    "content": "<p>To view logfiles while they update do:</p>\n<pre><code>tail -f path/to/logfile_name</code></pre>\n<p>Thanks <a href=\"http://twitter.com/Yiroon\">Jeroen</a> for the tip.</p>\n",
+    "teaser": "<p>To view logfiles while they update do:</p>\n<pre><code>tail -f path/to/logfile_name</code></pre>\n<p>Thanks <a href=\"http://twitter.com/Yiroon\">Jeroen</a> for the tip.</p>\n",
+    "createDate": "2012-09-05T00:00:00+02:00",
+    "updateDate": "2012-09-05T00:00:00+02:00",
+    "createDateFormatted": "2012.09.05",
+    "updateDateFormatted": "2012.09.05",
+    "createDateTimestamp": "1346796000",
+    "updateDateTimestamp": "1346796000"
+  },
+  {
+    "uuid": "cfd18ecc-5ecc-45c6-87fc-72b0c32796dc",
+    "author": "Toon Ketels",
+    "title": "Visualize latest commits from all branches in git",
+    "alias": "visualize-latest-commits-from-all-branches-in-git",
+    "type": "note",
+    "tags": [
+      "git",
+      "cli"
+    ],
+    "content": "<p>Use <a href=\"http://gitguys.com/topics/git-show-branch-to-see-branches-and-their-commits\">git show-branch</a> to know which branch last was committed to.</p>\n<pre><code>git show-branch --color</code></pre>\n<p>It visualizes all branches with their last commits.</p>\n",
+    "teaser": "<p>Use <a href=\"http://gitguys.com/topics/git-show-branch-to-see-branches-and-their-commits\">git show-branch</a> to know which branch last was committed to.</p>\n<pre><code>git show-branch --color</code></pre>\n<p>It visualizes all branches with their last commits.</p>\n",
+    "createDate": "2012-07-30T00:00:00+02:00",
+    "updateDate": "2012-07-30T00:00:00+02:00",
+    "createDateFormatted": "2012.07.30",
+    "updateDateFormatted": "2012.07.30",
+    "createDateTimestamp": "1343599200",
+    "updateDateTimestamp": "1343599200"
+  },
+  {
+    "uuid": "ab6659e3-3e28-4fe2-941f-6da5b1f84682",
+    "author": "Toon Ketels",
+    "title": "Backbone.js, no more JavaScript spaghetti code",
+    "alias": "backbonejs-no-more-javascript-spaghetti-code",
+    "type": "talk",
+    "tags": [
+      "backbonejs",
+      "drupalJam"
+    ],
+    "content": "<p>As backbone.js is committed to drupal 8, I gave an introduction talk about backbone at drupalJam in the the Netherlands.</p>\n<p>It&#39;s all about Backbone.js fundamentals with models, collections, views and their interaction (change event - rendering), to really understand what&#39;s going and how it helps manage JavaScript application complexity.</p>\n<p>Checkout the <a href=\"https://speakerdeck.com/toonketels/introducing-backbone-dot-js\">presentation slides</a> and <a href=\"https://github.com/toonketels/backbone-presentation-demo\">demo code</a>.</p>\n",
+    "teaser": "<p>As backbone.js is committed to drupal 8, I gave an introduction talk about backbone at drupalJam in the the Netherlands.</p>\n<p>It&#39;s all about Backbone.js fundamentals with models, collections, views and...</p>",
+    "createDate": "2013-05-17T00:00:00+02:00",
+    "updateDate": "2013-05-17T00:00:00+02:00",
+    "createDateFormatted": "2013.05.17",
+    "updateDateFormatted": "2013.05.17",
+    "createDateTimestamp": "1368741600",
+    "updateDateTimestamp": "1368741600"
+  },
+  {
+    "uuid": "7f4c6d89-0626-466d-bbfc-5be42c11d987",
+    "author": "Toon Ketels",
+    "title": "Introducing d3js at fronteers meetup",
+    "alias": "d3js-presentation-fronteers-meetup",
+    "type": "talk",
+    "tags": [
+      "d3js",
+      "fronteers"
+    ],
+    "content": "<p>I presented about d3.js at a <a href=\"http://fronteers.nl/bijeenkomsten/2013/thomas-more\">fronteers meetup</a> in Mechelen.</p>\n<p>The talk is a practical d3.js introduction to teach some of d3&#39;s fundamentals such as data-joins, scales, axis, labels, ticks, animations...</p>\n<p>We started off with a plain SVG representing a chart, refine it, in each iteration touching a new topic to actually update the chart (animate bars and scale) every x minutes.</p>\n<p>Take a look at the <a href=\"https://speakerdeck.com/toonketels/introducing-d3-dot-js\">presentation slides</a> and the <a href=\"https://github.com/toonketels/d3-presentation-demo\">demo code</a>.</p>\n<h2>Resources</h2>\n<ul>\n<li><a href=\"https://speakerdeck.com/toonketels/introducing-d3-dot-js\">Presentation slides</a></li>\n<li><a href=\"https://github.com/toonketels/d3-presentation-demo\">Presentation demo code</a></li>\n<li><a href=\"http://fronteers.nl/bijeenkomsten/2013/thomas-more\">Fronteers announcement</a></li>\n</ul>\n",
+    "teaser": "<p>I presented about d3.js at a <a href=\"http://fronteers.nl/bijeenkomsten/2013/thomas-more\">fronteers meetup</a> in Mechelen.</p>\n<p>The talk is a practical d3.js introduction to teach some of d3&#39;s fundamentals such as data-joins, scales, axis, labels, ticks, animations...</p>",
+    "createDate": "2013-05-23T00:00:00+02:00",
+    "updateDate": "2013-05-23T00:00:00+02:00",
+    "createDateFormatted": "2013.05.23",
+    "updateDateFormatted": "2013.05.23",
+    "createDateTimestamp": "1369260000",
+    "updateDateTimestamp": "1369260000"
+  },
+  {
+    "uuid": "7b56e919-f0c4-4258-809b-1c98c0b8c14b",
+    "author": "Toon Ketels",
+    "title": "DUG about Backbone.js",
+    "alias": "dug-backbonejs",
+    "type": "talk",
+    "content": "<p>Already introduced Backbone.js to Dutch Drupal developers. Today organized a Drupal User Group to talk about backbone.js to Belgian Drupal devs. Fortunately, we could spend a bit more time on the topic. Really enjoyed the talk. Audience asked lots of interesting questions.</p>\n<p>Thanks to <a href=\"https://twitter.com/sdecabooter\">Sven Decabooter</a> for recording the talk and <a href=\"http://wunderkraut.be\">Wunderkraut</a> for hosting the event.</p>\n<p>Recording (in Dutch) and more info can be found on the <a href=\"http://drupal.be/evenement/dug-introducing-backbonejs-manage-javascript-application-complexity\">drupal.be community website</a>.</p>\n",
+    "teaser": "<p>Already introduced Backbone.js to Dutch Drupal developers. Today organized a Drupal User Group to talk about backbone.js to Belgian Drupal devs. Fortunately, we could spend a bit more time on the topi...</p>",
+    "createDate": "2013-07-11T00:00:00+02:00",
+    "updateDate": "2013-07-11T00:00:00+02:00",
+    "createDateFormatted": "2013.07.11",
+    "updateDateFormatted": "2013.07.11",
+    "createDateTimestamp": "1373493600",
+    "updateDateTimestamp": "1373493600"
+  },
+  {
+    "uuid": "2b23a2f4-c89f-4e71-bad1-05794d1a3fab",
+    "author": "Toon Ketels",
+    "title": "Get to know backbone.js, before it becomes just another pain in the #!$",
+    "alias": "get-to-know-backbonejs-before-it-becomes-just-another-pain",
+    "type": "talk",
+    "tags": [
+      "backbonejs",
+      "drupalCampLeuven"
+    ],
+    "content": "<p>I&#39;ll be presenting about Backbone.js again to the Drupal community tomorrow morning at DrupalCampLeuven. My talk <a href=\"http://leuven2013.drupalcamp.be/session/get-know-backbonejs-it-becomes-just-another-pain\">&#39;Get to know backbone.js, before it becomes just another &quot;pain in the #!$&quot;&#39;</a> addresses the need in the Drupal community to get up to speed about Backbone.js.</p>\n<p>Drupal 8 will ship with backbone.js and although backbone is just a tiny library that makes it much easier to structure JavaScript code, it does make the code more complex. It simplifies maintainability but at the same time adds a layer of complexity by adding new abstractions and rules about organising JavaScript code. It is easy to work with as long as we have an understanding of these rules and concepts. To prevent it being &quot;a pain in the #!$&quot;, we should get to know Backbone.</p>\n<p>As I&#39;m scheduled first thing Sunday morning, I hope people make it that early...</p>\n",
+    "teaser": "<p>I&#39;ll be presenting about Backbone.js again to the Drupal community tomorrow morning at DrupalCampLeuven. My talk <a href=\"http://leuven2013.drupalcamp.be/session/get-know-backbonejs-it-becomes-just-another-pain\">&#39;Get to know backbone.js, before it becomes just another &quot;pain in the #!$&...</a></p>",
+    "createDate": "2013-09-14T00:00:00+02:00",
+    "updateDate": "2013-09-14T00:00:00+02:00",
+    "createDateFormatted": "2013.09.14",
+    "updateDateFormatted": "2013.09.14",
+    "createDateTimestamp": "1379109600",
+    "updateDateTimestamp": "1379109600"
+  },
+  {
+    "uuid": "ae599d6e-56c3-4e95-93dd-09a26bd9f200",
+    "author": "Toon Ketels",
+    "title": "Introducing Grunt.js, the JavaScript Task Runner",
+    "alias": "introducing-gruntjs-the-javascript-task-runner",
+    "type": "talk",
+    "tags": [
+      "gruntjs",
+      "nodejs user group"
+    ],
+    "content": "<p>Together with <a href=\"https://twitter.com/anthonyringoet\">Anthony Ringoet</a>, I presented about <a href=\"http://gruntjs.com\">Gruntjs</a> at the <a href=\"http://lanyrd.com/2013/njug-be/schedule\">Node.js User Group</a> in Antwerp.</p>\n<p>We gave a practical introduction to using Grunt.js. Once the basics (installing, using) were adressed, we took on some more advanced, in depth topics such as tasks, &quot;magic&quot; config attributes and project scaffolding.</p>\n<p>Checkout the <a href=\"https://speakerdeck.com/toonketels/introducing-grunt-dot-js-the-javascript-task-runner\">presentation slides</a> and the <a href=\"https://github.com/toonketels/grunt-presentation-demo\">demo code</a>.</p>\n",
+    "teaser": "<p>Together with <a href=\"https://twitter.com/anthonyringoet\">Anthony Ringoet</a>, I presented about <a href=\"http://gruntjs.com\">Gruntjs</a> at the <a href=\"http://lanyrd.com/2013/njug-be/schedule\">Node.js User Group</a> in Antwerp.</p>\n<p>We gave a practical introduction to using Grunt.js. Once the basics (installing, using) were adressed, we...</p>",
+    "createDate": "2013-05-15T00:00:00+02:00",
+    "updateDate": "2013-05-15T00:00:00+02:00",
+    "createDateFormatted": "2013.05.15",
+    "updateDateFormatted": "2013.05.15",
+    "createDateTimestamp": "1368568800",
+    "updateDateTimestamp": "1368568800"
+  },
+  {
+    "uuid": "93778707-23d9-4711-bf5b-f2a07ab04773",
+    "author": "Toon Ketels",
+    "title": "Tools used to create data visualization Apps for Antwerp",
+    "alias": "apps-for-antwerp-data-visualization",
+    "type": "project",
+    "tags": [
+      "visualization"
+    ],
+    "content": "<p>We used a couple of tools to create our data visualization for <a href=\"http://knife-io.github.com/Apps-for-Antwerp/\">Apps for Antwerp</a>.</p>\n<h2>d3js</h2>\n<p><a href=\"http://d3js.org/\">D3js</a> played a mayor role. It is a JavaScript data visualization library with just the right amount of functionality to create visualizations. It does not try to do too much by providing configurable charts but rather gives you the building blocks necessary to create them.</p>\n<h2>Jade</h2>\n<p>Although we did not write much html, the couple of lines we wrote were generated using <a href=\"http://jade-lang.com/\">jade</a>. I love the DRY, indentation based syntax of jade.</p>\n<h2>Sass</h2>\n<p>Css is generated with <a href=\"http://sass-lang.com/\">sass</a>. I prefer the sass syntax over scss as it&#39;s more concise.</p>\n<h2>Make</h2>\n<p>Both jade and sass needs to be compiled into html and css. We can do so via the command line. To speed up the process, we created a makefile with different commands in it the compile both at the same time. In the future, we might use <a href=\"http://gruntjs.com/\">grunt</a> instead of <a href=\"http://en.wikipedia.org/wiki/Make_(software\">make</a>) though.</p>\n<h2>Foundation</h2>\n<p><a href=\"http://foundation.zurb.com/\">Foundation</a> is used for layout, typography and navigational elements. It&#39;s a front-end framework using sass.</p>\n<h2>jQuery</h2>\n<p>Although we did not make much use of it, Foundation requires <a href=\"http://jquery.com/\">jQuery</a> for some functionality so we included it. D3js also offers selector and animator functions and they are more appropriate for data visualizations.</p>\n<h2>node-csv</h2>\n<p>Preparing the data is an important step in creating data visualizations. We used <a href=\"http://www.adaltas.com/projects/node-csv/\">node-csv</a> in JavaScript scripts executed from the command line to parse and create csv files. This allowed us to combine several csv files and filter out data.</p>\n<h2>node.js express server</h2>\n<p>The final result is hosted as <a href=\"http://pages.github.com/\">gh-pages</a> on Github. During the development we needed a server to serve the csv file. <a href=\"http://expressjs.com/\">Express node.js server</a> was used for that reason. A simpler solution would be to use <a href=\"https://github.com/cloudhead/node-static\">node static</a> or <a href=\"http://httpd.apache.org/\">apache</a> to serve the files.</p>\n",
+    "teaser": "<p>We used a couple of tools to create our data visualization for <a href=\"http://knife-io.github.com/Apps-for-Antwerp/\">Apps for Antwerp</a>.</p>\n<h2>d3js</h2>\n<p><a href=\"http://d3js.org/\">D3js</a> played a mayor role. It is a JavaScript data visualization library with just the right amount of functionalit...</p>",
+    "createDate": "2012-12-22T00:00:00+01:00",
+    "updateDate": "2012-12-22T00:00:00+01:00",
+    "createDateFormatted": "2012.12.22",
+    "updateDateFormatted": "2012.12.22",
+    "createDateTimestamp": "1356130800",
+    "updateDateTimestamp": "1356130800"
+  },
+  {
+    "uuid": "c8484ac2-2a0f-4c16-9a3b-ba19149b1bc6",
+    "author": "Toon Ketels",
+    "title": "Corelio annual report with backbonejs and reponsive d3js charts",
+    "alias": "corelio-annual-report-with-backbonejs-and-reponsive-d3js-charts",
+    "type": "project",
+    "tags": [
+      "d3js",
+      "backbonejs",
+      "charts",
+      "gruntjs",
+      "requirejs"
+    ],
+    "content": "<p>I was asked by <a href=\"http://wolfslittlestore.be/\">Johan from Wolf&#39;s Little Store</a> to help creating some d3js charts for <a href=\"http://corelio.be/bedrijfsinfo/jaarverslagen/jv2012\">Corelio&#39;s 2012 Annual Report</a>.</p>\n<p>We ended up creating a backbone.js application to display the slides touching on different topics.</p>\n<h2>Some of the challenges</h2>\n<ul>\n<li>Display the chart axis on page load, but only start displaying the chart&#39;s content (graphs) when within the viewport.</li>\n<li>Don&#39;t start showing the chart&#39;s content when the visitor is scrolling very fast over them.</li>\n<li>Initially, the charts had a fixed width. We ended up making the charts responsive by adapting to the available width.</li>\n<li>The visitor can scroll to specific slides using the menu.</li>\n<li>Create a static one pager with a JavaScript application to make everything interactive.</li>\n<li>Make parts of the d3.js charts reusable since we created several of them.</li>\n</ul>\n<h2>Some of the tools used</h2>\n<ul>\n<li><a href=\"http://backbonejs.org\">Backbone.js</a>: to structure the application and keep us sane</li>\n<li><a href=\"http://d3js.org\">D3.js</a>: to create the different charts</li>\n<li><a href=\"http://imakewebthings.com/jquery-waypoints\">jQuery waypoints</a>: to decide when to display the chart&#39;s contents and figure out which menu link to activate</li>\n<li><a href=\"http://gruntjs.com\">Gruntjs</a>: to help us build the endresult, which is basically one static file</li>\n<li><a href=\"http://requirejs.org\">require.js</a>: to load the different JavaScript files and divide the JavaScript application in different modules</li>\n</ul>\n<p>Checkout the <a href=\"http://corelio.be/bedrijfsinfo/jaarverslagen/jv2012\">endresult</a>.</p>\n",
+    "teaser": "<p>I was asked by <a href=\"http://wolfslittlestore.be/\">Johan from Wolf&#39;s Little Store</a> to help creating some d3js charts for <a href=\"http://corelio.be/bedrijfsinfo/jaarverslagen/jv2012\">Corelio&#39;s 2012 Annual Report</a>.</p>\n<p>We ended up creating a backbone.js application to display the slides touching ...</p>",
+    "createDate": "2013-05-12T00:00:00+02:00",
+    "updateDate": "2013-05-12T00:00:00+02:00",
+    "createDateFormatted": "2013.05.12",
+    "updateDateFormatted": "2013.05.12",
+    "createDateTimestamp": "1368309600",
+    "updateDateTimestamp": "1368309600"
+  },
+  {
+    "uuid": "f979d1a1-6dd0-4498-adb1-315abed2984c",
+    "author": "Toon Ketels",
+    "title": "Visualization worldwide Spotify track availability with d3js and Twitter's flight framework",
+    "alias": "visualization-spotify-track-availability-d3js-twitter-flight",
+    "type": "project",
+    "tags": [
+      "d3js",
+      "flight",
+      "Spotify",
+      "visualization",
+      "requirejs"
+    ],
+    "content": "<p>To get familiar with Twitter&#39;s flight framework, I created a small <a href=\"http://toonketels.github.io/spotify-search\">data visualization of Spotify&#39;s worldwide track availabilty</a>.</p>\n<p>I use the Spotify API to find the availability of the track wordwide.</p>\n<p>The results are visualized with d3.js. The countries for which the track is available are highlighted on a globe, created with d3js geo capabilities. To rotate the globe, drag it.</p>\n<p>The dataset is a combination of the results returned by the Spotify API, wikipedia country ISO codes list and a json file specifying the country borders.</p>\n<h2>Resources</h2>\n<ul>\n<li><a href=\"http://toonketels.github.io/spotify-search\">Application demo</a></li>\n<li><a href=\"\">Application github repo</a></li>\n<li><a href=\"http://d3js.org\">d3js</a></li>\n<li><a href=\"http://twitter.github.io/flight\">Twitter flight</a></li>\n</ul>\n",
+    "teaser": "<p>To get familiar with Twitter&#39;s flight framework, I created a small <a href=\"http://toonketels.github.io/spotify-search\">data visualization of Spotify&#39;s worldwide track availabilty</a>.</p>\n<p>I use the Spotify API to find the availability of the track word...</p>",
+    "createDate": "2013-02-19T00:00:00+01:00",
+    "updateDate": "2013-02-19T00:00:00+01:00",
+    "createDateFormatted": "2013.02.19",
+    "updateDateFormatted": "2013.02.19",
+    "createDateTimestamp": "1361228400",
+    "updateDateTimestamp": "1361228400"
+  }
+]

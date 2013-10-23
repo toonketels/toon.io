@@ -1,0 +1,18 @@
+{
+  "uuid": "ade2ead9-cabc-4be0-8b97-d727b8b23915",
+  "author": "Toon Ketels",
+  "title": "How to find out which ports are in use",
+  "alias": "how-to-find-out-which-ports-are-in-use",
+  "type": "note",
+  "tags": [
+    "cli"
+  ],
+  "content": "<p>To list all the ports in use on your machine, do:</p>\n<pre><code>netstat -anf inet</code></pre>\n<p>To see which process is using a specific port, do:</p>\n<pre><code>// sudo lsof -i :&lt;portnumber>\nsudo lsof -i :80</code></pre>\n<p>The above will list all processes using port 80. To kill a process, do:</p>\n<pre><code>// kill -9 &lt;processid>\nkill -9 51377</code></pre>\n",
+  "teaser": "<p>To list all the ports in use on your machine, do:</p>\n<pre><code>netstat -anf inet</code></pre>\n<p>To see which process is using a specific port, do:</p>\n<pre><code>// sudo lsof -i :&lt;portnumber>\nsudo lsof -i :80</code></pre>\n<p>The above will list all process</p>",
+  "createDate": "2012-07-30T00:00:00+02:00",
+  "updateDate": "2012-07-30T00:00:00+02:00",
+  "createDateFormatted": "2012.07.30",
+  "updateDateFormatted": "2012.07.30",
+  "createDateTimestamp": "1343599200",
+  "updateDateTimestamp": "1343599200"
+}

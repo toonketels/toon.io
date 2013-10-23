@@ -1,0 +1,19 @@
+{
+  "uuid": "cfd18ecc-5ecc-45c6-87fc-72b0c32796dc",
+  "author": "Toon Ketels",
+  "title": "Visualize latest commits from all branches in git",
+  "alias": "visualize-latest-commits-from-all-branches-in-git",
+  "type": "note",
+  "tags": [
+    "git",
+    "cli"
+  ],
+  "content": "<p>Use <a href=\"http://gitguys.com/topics/git-show-branch-to-see-branches-and-their-commits\">git show-branch</a> to know which branch last was committed to.</p>\n<pre><code>git show-branch --color</code></pre>\n<p>It visualizes all branches with their last commits.</p>\n",
+  "teaser": "<p>Use <a href=\"http://gitguys.com/topics/git-show-branch-to-see-branches-and-their-commits\">git show-branch</a> to know which branch last was committed to.</p>\n<pre><code>git show-branch --color</code></pre>\n<p>It visualizes all branches with their last commits.</p>\n",
+  "createDate": "2012-07-30T00:00:00+02:00",
+  "updateDate": "2012-07-30T00:00:00+02:00",
+  "createDateFormatted": "2012.07.30",
+  "updateDateFormatted": "2012.07.30",
+  "createDateTimestamp": "1343599200",
+  "updateDateTimestamp": "1343599200"
+}

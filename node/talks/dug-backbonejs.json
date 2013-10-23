@@ -1,0 +1,15 @@
+{
+  "uuid": "7b56e919-f0c4-4258-809b-1c98c0b8c14b",
+  "author": "Toon Ketels",
+  "title": "DUG about Backbone.js",
+  "alias": "dug-backbonejs",
+  "type": "talk",
+  "content": "<p>Already introduced Backbone.js to Dutch Drupal developers. Today organized a Drupal User Group to talk about backbone.js to Belgian Drupal devs. Fortunately, we could spend a bit more time on the topic. Really enjoyed the talk. Audience asked lots of interesting questions.</p>\n<p>Thanks to <a href=\"https://twitter.com/sdecabooter\">Sven Decabooter</a> for recording the talk and <a href=\"http://wunderkraut.be\">Wunderkraut</a> for hosting the event.</p>\n<p>Recording (in Dutch) and more info can be found on the <a href=\"http://drupal.be/evenement/dug-introducing-backbonejs-manage-javascript-application-complexity\">drupal.be community website</a>.</p>\n",
+  "teaser": "<p>Already introduced Backbone.js to Dutch Drupal developers. Today organized a Drupal User Group to talk about backbone.js to Belgian Drupal devs. Fortunately, we could spend a bit more time on the topi...</p>",
+  "createDate": "2013-07-11T00:00:00+02:00",
+  "updateDate": "2013-07-11T00:00:00+02:00",
+  "createDateFormatted": "2013.07.11",
+  "updateDateFormatted": "2013.07.11",
+  "createDateTimestamp": "1373493600",
+  "updateDateTimestamp": "1373493600"
+}

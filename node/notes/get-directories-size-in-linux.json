@@ -1,0 +1,18 @@
+{
+  "uuid": "73b07462-8239-4c9d-b843-8594ff8828ef",
+  "author": "Toon Ketels",
+  "title": "Get directories size in linux",
+  "alias": "get-directories-size-in-linux",
+  "type": "note",
+  "tags": [
+    "cli"
+  ],
+  "content": "<p>To find out the sizes of the different directories in our current location do:</p>\n<pre><code>du -csh *</code></pre>\n<p>Which stands for:\n<em> du: disk usage\n</em> c: grand total, <em>might think of it as &quot;compute total&quot;</em>\n<em> s: summary\n</em> h: human readable</p>\n",
+  "teaser": "<p>To find out the sizes of the different directories in our current location do:</p>\n<pre><code>du -csh *</code></pre>\n<p>Which stands for:\n<em> du: disk usage\n</em> c: grand total, <em>might think of it as &quot;compute total&quot;</em>\n<em> s: summary\n</em> </p>",
+  "createDate": "2013-03-15T00:00:00+01:00",
+  "updateDate": "2013-03-15T00:00:00+01:00",
+  "createDateFormatted": "2013.03.15",
+  "updateDateFormatted": "2013.03.15",
+  "createDateTimestamp": "1363302000",
+  "updateDateTimestamp": "1363302000"
+}

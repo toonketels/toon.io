@@ -1,0 +1,19 @@
+{
+  "uuid": "2b23a2f4-c89f-4e71-bad1-05794d1a3fab",
+  "author": "Toon Ketels",
+  "title": "Get to know backbone.js, before it becomes just another pain in the #!$",
+  "alias": "get-to-know-backbonejs-before-it-becomes-just-another-pain",
+  "type": "talk",
+  "tags": [
+    "backbonejs",
+    "drupalCampLeuven"
+  ],
+  "content": "<p>I&#39;ll be presenting about Backbone.js again to the Drupal community tomorrow morning at DrupalCampLeuven. My talk <a href=\"http://leuven2013.drupalcamp.be/session/get-know-backbonejs-it-becomes-just-another-pain\">&#39;Get to know backbone.js, before it becomes just another &quot;pain in the #!$&quot;&#39;</a> addresses the need in the Drupal community to get up to speed about Backbone.js.</p>\n<p>Drupal 8 will ship with backbone.js and although backbone is just a tiny library that makes it much easier to structure JavaScript code, it does make the code more complex. It simplifies maintainability but at the same time adds a layer of complexity by adding new abstractions and rules about organising JavaScript code. It is easy to work with as long as we have an understanding of these rules and concepts. To prevent it being &quot;a pain in the #!$&quot;, we should get to know Backbone.</p>\n<p>As I&#39;m scheduled first thing Sunday morning, I hope people make it that early...</p>\n",
+  "teaser": "<p>I&#39;ll be presenting about Backbone.js again to the Drupal community tomorrow morning at DrupalCampLeuven. My talk <a href=\"http://leuven2013.drupalcamp.be/session/get-know-backbonejs-it-becomes-just-another-pain\">&#39;Get to know backbone.js, before it becomes just another &quot;pain in the #!$&...</a></p>",
+  "createDate": "2013-09-14T00:00:00+02:00",
+  "updateDate": "2013-09-14T00:00:00+02:00",
+  "createDateFormatted": "2013.09.14",
+  "updateDateFormatted": "2013.09.14",
+  "createDateTimestamp": "1379109600",
+  "updateDateTimestamp": "1379109600"
+}

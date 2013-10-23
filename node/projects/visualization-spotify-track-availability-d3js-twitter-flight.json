@@ -1,0 +1,22 @@
+{
+  "uuid": "f979d1a1-6dd0-4498-adb1-315abed2984c",
+  "author": "Toon Ketels",
+  "title": "Visualization worldwide Spotify track availability with d3js and Twitter's flight framework",
+  "alias": "visualization-spotify-track-availability-d3js-twitter-flight",
+  "type": "project",
+  "tags": [
+    "d3js",
+    "flight",
+    "Spotify",
+    "visualization",
+    "requirejs"
+  ],
+  "content": "<p>To get familiar with Twitter&#39;s flight framework, I created a small <a href=\"http://toonketels.github.io/spotify-search\">data visualization of Spotify&#39;s worldwide track availabilty</a>.</p>\n<p>I use the Spotify API to find the availability of the track wordwide.</p>\n<p>The results are visualized with d3.js. The countries for which the track is available are highlighted on a globe, created with d3js geo capabilities. To rotate the globe, drag it.</p>\n<p>The dataset is a combination of the results returned by the Spotify API, wikipedia country ISO codes list and a json file specifying the country borders.</p>\n<h2>Resources</h2>\n<ul>\n<li><a href=\"http://toonketels.github.io/spotify-search\">Application demo</a></li>\n<li><a href=\"\">Application github repo</a></li>\n<li><a href=\"http://d3js.org\">d3js</a></li>\n<li><a href=\"http://twitter.github.io/flight\">Twitter flight</a></li>\n</ul>\n",
+  "teaser": "<p>To get familiar with Twitter&#39;s flight framework, I created a small <a href=\"http://toonketels.github.io/spotify-search\">data visualization of Spotify&#39;s worldwide track availabilty</a>.</p>\n<p>I use the Spotify API to find the availability of the track word...</p>",
+  "createDate": "2013-02-19T00:00:00+01:00",
+  "updateDate": "2013-02-19T00:00:00+01:00",
+  "createDateFormatted": "2013.02.19",
+  "updateDateFormatted": "2013.02.19",
+  "createDateTimestamp": "1361228400",
+  "updateDateTimestamp": "1361228400"
+}

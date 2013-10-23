@@ -1,0 +1,22 @@
+{
+  "uuid": "c8484ac2-2a0f-4c16-9a3b-ba19149b1bc6",
+  "author": "Toon Ketels",
+  "title": "Corelio annual report with backbonejs and reponsive d3js charts",
+  "alias": "corelio-annual-report-with-backbonejs-and-reponsive-d3js-charts",
+  "type": "project",
+  "tags": [
+    "d3js",
+    "backbonejs",
+    "charts",
+    "gruntjs",
+    "requirejs"
+  ],
+  "content": "<p>I was asked by <a href=\"http://wolfslittlestore.be/\">Johan from Wolf&#39;s Little Store</a> to help creating some d3js charts for <a href=\"http://corelio.be/bedrijfsinfo/jaarverslagen/jv2012\">Corelio&#39;s 2012 Annual Report</a>.</p>\n<p>We ended up creating a backbone.js application to display the slides touching on different topics.</p>\n<h2>Some of the challenges</h2>\n<ul>\n<li>Display the chart axis on page load, but only start displaying the chart&#39;s content (graphs) when within the viewport.</li>\n<li>Don&#39;t start showing the chart&#39;s content when the visitor is scrolling very fast over them.</li>\n<li>Initially, the charts had a fixed width. We ended up making the charts responsive by adapting to the available width.</li>\n<li>The visitor can scroll to specific slides using the menu.</li>\n<li>Create a static one pager with a JavaScript application to make everything interactive.</li>\n<li>Make parts of the d3.js charts reusable since we created several of them.</li>\n</ul>\n<h2>Some of the tools used</h2>\n<ul>\n<li><a href=\"http://backbonejs.org\">Backbone.js</a>: to structure the application and keep us sane</li>\n<li><a href=\"http://d3js.org\">D3.js</a>: to create the different charts</li>\n<li><a href=\"http://imakewebthings.com/jquery-waypoints\">jQuery waypoints</a>: to decide when to display the chart&#39;s contents and figure out which menu link to activate</li>\n<li><a href=\"http://gruntjs.com\">Gruntjs</a>: to help us build the endresult, which is basically one static file</li>\n<li><a href=\"http://requirejs.org\">require.js</a>: to load the different JavaScript files and divide the JavaScript application in different modules</li>\n</ul>\n<p>Checkout the <a href=\"http://corelio.be/bedrijfsinfo/jaarverslagen/jv2012\">endresult</a>.</p>\n",
+  "teaser": "<p>I was asked by <a href=\"http://wolfslittlestore.be/\">Johan from Wolf&#39;s Little Store</a> to help creating some d3js charts for <a href=\"http://corelio.be/bedrijfsinfo/jaarverslagen/jv2012\">Corelio&#39;s 2012 Annual Report</a>.</p>\n<p>We ended up creating a backbone.js application to display the slides touching ...</p>",
+  "createDate": "2013-05-12T00:00:00+02:00",
+  "updateDate": "2013-05-12T00:00:00+02:00",
+  "createDateFormatted": "2013.05.12",
+  "updateDateFormatted": "2013.05.12",
+  "createDateTimestamp": "1368309600",
+  "updateDateTimestamp": "1368309600"
+}

@@ -1,0 +1,18 @@
+{
+  "uuid": "bc3afe75-d3b7-4d39-8ca1-6fdafba7b533",
+  "author": "Toon Ketels",
+  "title": "How to remove all files but one from command line?",
+  "alias": "how-to-remove-all-files-but-one-from-command-line",
+  "type": "note",
+  "tags": [
+    "cli"
+  ],
+  "content": "<p>To remove all files but a given one do:</p>\n<pre><code>find . -type f -not -name &quot;application.make&quot; | xargs rm</code></pre>\n<p>To also remove the directories do:</p>\n<pre><code>find . -not -name &quot;application.make&quot; | xargs rm -r</code></pre>\n",
+  "teaser": "<p>To remove all files but a given one do:</p>\n<pre><code>find . -type f -not -name &quot;application.make&quot; | xargs rm</code></pre>\n<p>To also remove the directories do:</p>\n<pre><code>find . -not -name &quot;application.make&quot; | xargs rm -</code></pre>",
+  "createDate": "2012-09-15T00:00:00+02:00",
+  "updateDate": "2012-09-15T00:00:00+02:00",
+  "createDateFormatted": "2012.09.15",
+  "updateDateFormatted": "2012.09.15",
+  "createDateTimestamp": "1347660000",
+  "updateDateTimestamp": "1347660000"
+}

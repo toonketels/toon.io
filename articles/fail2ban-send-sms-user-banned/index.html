@@ -1,0 +1,256 @@
+<html lang="en" class=""><head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Extend Fail2ban to send text messages every time a user/bot gets banned - TOON.IO</title>
+    <meta name="description" content="Hi. I’m Toon, I’m a freelance javascript developer. I specialize in writing great javascript using tools like d3.js, marionette and backbone.js.">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="apple-touch-icon" sizes="114x114" href="apple-touch-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    <meta>
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="http://toon.io/"><!--[if lt IE 7]>
+    <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p><![endif]-->
+    <link href="/css/screen.css" type="text/css" rel="stylesheet" media="screen">
+    <script src="/js/vendor/jquery.min.js"></script>
+    <script src="/js/vendor/nprogress.js"></script>
+</head>
+
+<body class="detail">
+    <div id="contact" class="color-inverse"><div class="contact-view inner-content"><p>Available for projects. Let’s talk.</p>
+<p>Contact:</p>
+<ul class="contact-links">
+  <li>+32 487 17 60 95</li>
+  <li><a href="mailto:hello@toon.io">hello@toon.io</a></li>
+  <li class="tw">
+    <a href="http://twitter.com/toonketels">
+      <span class="icon"></span>
+      <span class="label">Twitter</span>
+    </a>
+  </li>
+  <li class="in">
+    <a href="https://www.linkedin.com/in/toonketels">
+      <span class="icon"></span>
+      <span class="label">LinkedIn</span>
+    </a>
+  </li>
+  <li class="gh">
+    <a href="https://github.com/toonketels">
+      <span class="icon"></span>
+      <span class="label">Github</span>
+    </a>
+  </li>
+</ul></div></div>
+
+    <header id="header" class="color-inverse">
+      <div class="header-detail-view inner-content model-fail2ban-send-sms-user-banned">
+        <div class="susy-cols split-from-break-large split-ratio-1-5">
+          <div class="col">
+             <a href="/"><img src="/images/logo.png" alt="Toon.io"></a>
+          </div>
+          <div class="col-last">
+            <ul class="meta">
+              <li>2013.03.23</li>
+              <li>article, fail2ban, Twilio</li>
+              <li>Toon Ketels</li>
+            </ul>
+            <h2>Extend Fail2ban to send text messages every time a user/bot gets banned</h2>
+          </div>
+        </div>
+      </div>
+    </header>
+
+<div id="content">
+  <article class="main-detail-view model-fail2ban-send-sms-user-banned inner-content">
+    <p>To prevent scripts from brute forcing their way into my VPS via SSH I use <a href="http://www.fail2ban.org">Fail2ban</a>. It's a tool that checks the logs for password failures and set IP rules that blocks that user's IP for a given time.</p>
+<p>I have it already set up to send emails (one of the default actions), but I wanted it to send me a text message every time an IP gets banned.</p>
+<p>Fail2ban does not ship with such an action. Fortunately, it's not hard to create one.</p>
+<h2>How to extend fail2ban with custom actions?</h2>
+<p>It's easy to extend Fail2ban with custom actions. You only need to do two things:
+1. Create a new action in the /etc/fail2/ban/actions.d directory
+2. Configure jail.local to use that action</p>
+<h2>Create new action in actions.d</h2>
+<p>The easiest way to create a new action is to copy dummy.conf to <em>new-action.conf</em> and edit it. You'll find the different "hooks" you can use to execute your commands. Variables are passed via "&lt;variable&gt;" syntax.</p>
+<p>Below you'll find my sms.conf.</p>
+<pre><code>#
+# Author: Toon Ketels
+#
+# $Revision$
+#
+
+[Definition]
+
+# Option:  actionstart
+# Notes.:  command executed once at the start of Fail2Ban.
+# Values:  CMD
+#
+actionstart = /home/all/scripts/fail2ban-sms.sh start
+
+# Option:  actionstop
+# Notes.:  command executed once at the end of Fail2Ban
+# Values:  CMD
+#
+actionstop = /home/all/scripts/fail2ban-sms.sh stop
+
+# Option:  actioncheck
+# Notes.:  command executed once before each actionban command
+# Values:  CMD
+#
+actioncheck =
+
+# Option:  actionban
+# Notes.:  command executed when banning an IP. Take care that the
+#          command is executed with Fail2Ban user rights.
+# Tags:    &lt;ip&gt;  IP address
+#          &lt;failures&gt;  number of failures
+#          &lt;time&gt;  unix timestamp of the ban time
+# Values:  CMD
+#
+actionban = /home/all/scripts/fail2ban-sms.sh ban &lt;ip&gt;
+
+# Option:  actionunban
+# Notes.:  command executed when unbanning an IP. Take care that the
+#          command is executed with Fail2Ban user rights.
+# Tags:    &lt;ip&gt;  IP address
+#          &lt;failures&gt;  number of failures
+#          &lt;time&gt;  unix timestamp of the ban time
+# Values:  CMD
+#
+actionunban = /home/all/scripts/fail2ban-sms.sh unban &lt;ip&gt;
+
+[Init]
+
+init = 'Custom startup message</code></pre>
+<p>Above you see we don't actually send text messages directly from within this file, but invoke the script located at /home/all/scripts/fail2ban-sms.sh. We use the &lt;ip&gt; variable to be send in the text message and pass it as an argument to the script. </p>
+<p>Using scripts makes it easier to change the texting implementation later on (or when we would like to change provider).</p>
+<p>Before we look into the text messaging script, let's activate the command.</p>
+<h2>Config fail.local to execute action</h2>
+<p>Configure Fail2ban by copying jail.conf to jail.local and edit the file. We want texting whenever someone tries to bruteforce ssh. So we add "sms" to the list of actions in the ssh section like below.</p>
+<pre><code>#
+# in /etc/fail2ban/jail.local.
+#
+# Optionally you may override any other parameter (e.g. banaction,
+# action, port, logpath, etc) in that section within jail.local
+
+[ssh]
+
+enabled  = true
+port     = ssh
+filter   = sshd
+logpath  = /var/log/auth.log
+maxretry = 6
+action = mail-whois[name=SSH, dest=my.email@gmail.com]
+         sms</code></pre>
+<h2>Texting using twilio</h2>
+<p><a href="https://www.twilio.com/">Twilio's API</a> makes it easy to send sms's. Just POST to their api to text. Below you find the script used to perform the request to their API.</p>
+<pre><code>#!/bin/bash
+
+# Sends text messages using twilio api
+# to alert webmaster of banning.
+#
+# Requires one argument, one of the following:
+#  start
+#  stop
+#  ban
+#  unban
+#
+# Optional second argument: IP for ban/unban
+
+
+
+# Include file with the following content:
+#   sid=&lt;twilio account sid&gt;
+#   token=&lt;twilio auth token&gt;
+#   from=&lt;phone number&gt;
+#   to=&lt;phone number&gt;
+source secret.conf
+
+
+
+# Display usage information
+function show_usage {
+  echo "Usage: $0 action &lt;ip&gt;"
+  echo "Where action is start, stop, ban, unban"
+  echo "and ip is optional passed to ban, unban"
+  exit
+}
+
+
+
+# Actually send sms
+# Expects the sms content (body) to be passed
+# as argument.
+function send_sms {
+  /usr/bin/curl -X POST "https://api.twilio.com/2010-04-01/Accounts/$sid/SMS/Messages.json" -d "From=$from" -d "To=$to" -d "Body=$1" -u "$sid:$token" &gt;&gt; '/home/all/log/fail2ban-sms.log'    
+  exit
+}
+
+
+
+# Check for script arguments
+if [ $# -lt 1 ]
+then
+  show_usage
+fi
+
+
+
+# Take action depending on argument
+if [ "$1" = 'start' ]
+then
+  message='Fail2ban+just+started.'
+  send_sms $message
+elif [ "$1" = 'stop' ]
+then
+  message='Fail2ban+just+stopped.'
+  send_sms $message
+elif [ "$1" = 'ban' ]
+then
+  message=$([ "$2" != '' ] &amp;&amp; echo "Fail2ban+just+banned+$2" || echo 'Fail2ban+just+banned+an+ip.' )
+  send_sms $message
+elif [ "$1" = 'unban' ]
+then
+  message=$([ "$2" != '' ] &amp;&amp; echo "Fail2ban+just+unbanned+$2" || echo "Fail2ban+just+unbanned+an+ip." )
+  send_sms $message
+else
+  show_usage</code></pre>
+<p>The script expects a secret.conf in the same directory to read the Twilio authentication data and phone numbers from. The output of the requests are appended to a logfile in /home/all/log/fail2ban-sms.log.</p>
+<h2>Repo</h2>
+<p>You find the config file and script in <a href="https://github.com/toonketels/fail2ban-sms">github repo</a>.</p>
+<h2>Resources</h2>
+<ul>
+<li><a href="http://www.fail2ban.org">www.fail2ban.org</a></li>
+<li><a href="https://www.twilio.com">www.twilio.com</a></li>
+<li><a href="https://github.com/toonketels/fail2ban-sms">github.com/toonketels/fail2ban-sms</a></li>
+<li><a href="http://blog.redbranch.net/2013/02/28/fail2ban-custom-action">blog.redbranch.net/2013/02/28/fail2ban-custom-action</a></li>
+</ul>
+
+  </article>
+</div>
+
+<footer id="footer" class="color-inverse"><div class="footer-view inner-content"><div class="susy-cols split-from-break-large split-ratio-1-5">
+  <div class="col">
+    <img src="/images/toon.jpg">
+  </div>
+  <div class="col-last">
+    <p class="intro">Hi. I’m Toon, I’m a freelance JavaScript developer.</p>
+    <p>I write client side and server side JavaScript code.</p>
+    <p>I love <em>backbone</em> and <em>marionette</em> to structure client side applications, use <em>requirejs</em> to keep everything in seperate files, create custom tasks with <em>grunt</em> to build projects, like to write tests with <em>mocha</em> and <em>chai</em>.</p>
+    <p>When it comes to visualizing data, I reach for <em>d3</em>.</p>
+    <p>Do you need some assistance with you application?</p>
+    <p><a href="mailto:hello@toon.io">Contact me</a></p>
+  </div>
+</div>
+<div class="hr"><hr></div>
+  <div class="inner-content">
+    <p class="copyright">©2013 Toon Ketels</p>
+  </div>
+</div>
+</footer>
+  <script>
+    NProgress.configure({ showSpinner: false });
+    NProgress.start();
+  </script>
+  <script src="/js/app/optimized.js"></script>
+
+</body></html>

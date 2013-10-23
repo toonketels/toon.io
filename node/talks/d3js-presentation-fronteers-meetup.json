@@ -1,0 +1,19 @@
+{
+  "uuid": "7f4c6d89-0626-466d-bbfc-5be42c11d987",
+  "author": "Toon Ketels",
+  "title": "Introducing d3js at fronteers meetup",
+  "alias": "d3js-presentation-fronteers-meetup",
+  "type": "talk",
+  "tags": [
+    "d3js",
+    "fronteers"
+  ],
+  "content": "<p>I presented about d3.js at a <a href=\"http://fronteers.nl/bijeenkomsten/2013/thomas-more\">fronteers meetup</a> in Mechelen.</p>\n<p>The talk is a practical d3.js introduction to teach some of d3&#39;s fundamentals such as data-joins, scales, axis, labels, ticks, animations...</p>\n<p>We started off with a plain SVG representing a chart, refine it, in each iteration touching a new topic to actually update the chart (animate bars and scale) every x minutes.</p>\n<p>Take a look at the <a href=\"https://speakerdeck.com/toonketels/introducing-d3-dot-js\">presentation slides</a> and the <a href=\"https://github.com/toonketels/d3-presentation-demo\">demo code</a>.</p>\n<h2>Resources</h2>\n<ul>\n<li><a href=\"https://speakerdeck.com/toonketels/introducing-d3-dot-js\">Presentation slides</a></li>\n<li><a href=\"https://github.com/toonketels/d3-presentation-demo\">Presentation demo code</a></li>\n<li><a href=\"http://fronteers.nl/bijeenkomsten/2013/thomas-more\">Fronteers announcement</a></li>\n</ul>\n",
+  "teaser": "<p>I presented about d3.js at a <a href=\"http://fronteers.nl/bijeenkomsten/2013/thomas-more\">fronteers meetup</a> in Mechelen.</p>\n<p>The talk is a practical d3.js introduction to teach some of d3&#39;s fundamentals such as data-joins, scales, axis, labels, ticks, animations...</p>",
+  "createDate": "2013-05-23T00:00:00+02:00",
+  "updateDate": "2013-05-23T00:00:00+02:00",
+  "createDateFormatted": "2013.05.23",
+  "updateDateFormatted": "2013.05.23",
+  "createDateTimestamp": "1369260000",
+  "updateDateTimestamp": "1369260000"
+}
