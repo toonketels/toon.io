@@ -1658,7 +1658,7 @@ table {
     padding-bottom: 64px;
   }
 }
-#content article p, #content article h1, #content article h2, #content article h3, #content article h4, #content article h5, #content article h6, #content article ul, #content article .meta, #content article pre {
+#content article p, #content article h1, #content article h2, #content article h3, #content article h4, #content article h5, #content article h6, #content article ul, #content article ol, #content article .meta, #content article pre {
   *zoom: 1;
   max-width: 1000px;
   _width: 1000px;
@@ -1667,18 +1667,18 @@ table {
   margin-left: auto;
   margin-right: auto;
 }
-#content article p:after, #content article h1:after, #content article h2:after, #content article h3:after, #content article h4:after, #content article h5:after, #content article h6:after, #content article ul:after, #content article .meta:after, #content article pre:after {
+#content article p:after, #content article h1:after, #content article h2:after, #content article h3:after, #content article h4:after, #content article h5:after, #content article h6:after, #content article ul:after, #content article ol:after, #content article .meta:after, #content article pre:after {
   content: "";
   display: table;
   clear: both;
 }
 @media all and (min-width: 960px) {
-  #content article p, #content article h1, #content article h2, #content article h3, #content article h4, #content article h5, #content article h6, #content article ul, #content article .meta, #content article pre {
+  #content article p, #content article h1, #content article h2, #content article h3, #content article h4, #content article h5, #content article h6, #content article ul, #content article ol, #content article .meta, #content article pre {
     padding-left: 17%;
   }
 }
 @media all and (max-width: 960px) {
-  #content article p, #content article h1, #content article h2, #content article h3, #content article h4, #content article h5, #content article h6, #content article ul, #content article .meta, #content article pre {
+  #content article p, #content article h1, #content article h2, #content article h3, #content article h4, #content article h5, #content article h6, #content article ul, #content article ol, #content article .meta, #content article pre {
     padding-left: 0;
     padding-right: 0;
   }
@@ -1705,6 +1705,29 @@ table {
 }
 .main-list-view article.highlight .meta {
   color: #666666;
+}
+
+.main-detail-view h2, .main-detail-view h3, .main-detail-view h4, .main-detail-view h5, .main-detail-view h6 {
+  margin-top: 60px;
+  margin-bottom: 40px;
+}
+.main-detail-view p {
+  margin-bottom: 40px;
+}
+.main-detail-view ul {
+  list-style-type: disc;
+}
+.main-detail-view ul li {
+  list-style: disc;
+}
+.main-detail-view ol {
+  list-style-type: decimal;
+}
+.main-detail-view ol li {
+  list-style: decimal;
+}
+.main-detail-view ul li, .main-detail-view ol li {
+  margin-bottom: 10px;
 }
 
 /* SN 

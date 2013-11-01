@@ -1,0 +1,143 @@
+<html lang="en" class=""><head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Understanding passport.js authentication flow - TOON.IO</title>
+    <meta name="description" content="Hi. I’m Toon, I’m a freelance javascript developer. I specialize in writing great javascript using tools like d3.js, marionette and backbone.js.">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="apple-touch-icon" sizes="114x114" href="apple-touch-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    <meta>
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="http://toon.io/"><!--[if lt IE 7]>
+    <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p><![endif]-->
+    <link href="/css/screen.css" type="text/css" rel="stylesheet" media="screen">
+    <script src="/js/vendor/jquery.min.js"></script>
+    <script src="/js/vendor/nprogress.js"></script>
+</head>
+
+<body class="detail">
+    <div id="contact" class="color-inverse"><div class="contact-view inner-content"><p>Available for projects. Let’s talk.</p>
+<p>Contact:</p>
+<ul class="contact-links">
+  <li>+32 487 17 60 95</li>
+  <li><a href="mailto:hello@toon.io">hello@toon.io</a></li>
+  <li class="tw">
+    <a href="http://twitter.com/toonketels">
+      <span class="icon"></span>
+      <span class="label">Twitter</span>
+    </a>
+  </li>
+  <li class="in">
+    <a href="https://www.linkedin.com/in/toonketels">
+      <span class="icon"></span>
+      <span class="label">LinkedIn</span>
+    </a>
+  </li>
+  <li class="gh">
+    <a href="https://github.com/toonketels">
+      <span class="icon"></span>
+      <span class="label">Github</span>
+    </a>
+  </li>
+</ul></div></div>
+
+    <header id="header" class="color-inverse">
+      <div class="header-detail-view inner-content model-understanding-passportjs-authentication-flow">
+        <div class="susy-cols split-from-break-large split-ratio-1-5">
+          <div class="col">
+             <a href="/"><img src="/images/logo.png" alt="Toon.io"></a>
+          </div>
+          <div class="col-last">
+            <ul class="meta">
+              <li>2013.11.01</li>
+              <li>article, expressjs, passportjs, nodejs</li>
+              <li>Toon Ketels</li>
+            </ul>
+            <h2>Understanding passport.js authentication flow</h2>
+          </div>
+        </div>
+      </div>
+    </header>
+
+<div id="content">
+  <article class="main-detail-view model-understanding-passportjs-authentication-flow inner-content">
+    <p>Passport.js is a flexible authentication middleware (allowing users to log in) that can be fully customised and works great with connect/express.</p>
+<p>It is flexible in the sense that it allows for different authentication strategies (think via Twitter, via our own user database - installed via separate modules that can be combined) and it allows us to specify any route or output during authentication.</p>
+<p>The <a href="https://github.com/jaredhanson/passport-local">Local Strategy</a> allows us to authenticate users by looking up their data in the app's database. It has some <a href="https://github.com/jaredhanson/passport-local/blob/master/examples/express3/app.js">great examples how to use it</a>.</p>
+<h2>Different parts in using passport.js</h2>
+<p>There are three main parts in using passport.js:</p>
+<ul>
+<li>Requiring the module and using its <code>passport.initialize()</code> and <code>passport.session()</code> middleware with express.</li>
+<li>Configuring passport with at least one Strategy and setting up passport's <code>serializeUser</code> and <code>deserializeUser</code> methods.</li>
+<li>Specifying a route which uses the <code>passport.authenticate</code> middleware to actually authenticate a user.</li>
+</ul>
+<p>The example clearly demonstrates the different items. We wont go over it again.</p>
+<h2>Authentication request flow</h2>
+<p>With the tree parts configured as in the example, the following happens when a user tries the authenticate via the <code>/login</code> route:</p>
+<ol>
+<li>When the user submits the login form, a <code>POST</code> request to <code>/login</code> is made resulting in the execution of the <code>passport.authenticate</code> middleware we've set up.</li>
+<li>As the authenticate middleware for that route is configured to handle the <code>local</code> strategy, passport will invoke our implementation of the local strategy.</li>
+<li>Passport takes the <code>req.body.username</code> and <code>req.body.password</code> and passes it to our verification function in the local strategy.</li>
+<li>Now we do our thing: loading the user from the database and checking if the password given matches the one in the database.</li>
+<li>In case of an Error interacting with our database, we need to invoke <code>done(err)</code>. When we cannot find the user or the passwords do not watch, we invoke <code>done(null, false)</code>. If everything went fine and we want the user to login we invoke <code>done(null, user)</code>.</li>
+<li>Calling <code>done</code> will make the flow jump back into <code>passport.authenticate</code>. It's passed the error, user and additional info object (if defined).</li>
+<li>If the user was passed, the middleware will call <code>req.login</code> (a passport function attached to the request).</li>
+<li>This will call our <code>passport.serializeUser</code> method we've defined earlier. This method can access the user object we passed back to the middleware. It's its job to determine what data from the user object should be stored in the session. The result of the <code>serializeUser</code> method is attached to the session as `req.session.passport.user = { // our serialised user object // }.</li>
+<li>The result is also attached to the request as <code>req.user</code>.</li>
+<li>Once done, our requestHandler is invoked. In the example the user is redirected to the homepage.</li>
+</ol>
+<h2>Subsequent authenticated requests flow</h2>
+<p>On subsequent request, the following occurs:</p>
+<ol>
+<li>Express loads the session data and attaches it to the req. As passport stores the serialised user in the session, the serialised user object can be found at <code>req.session.password.user</code>.</li>
+<li>The general passport middleware we setup (<code>passport.initialize</code>) is invoked on the request, it finds the <code>passport.user</code> attached to the session. If is doesn't (user is not yet authenticated) it creates it like <code>req.passport.user = {}</code>.</li>
+<li>Next, <code>passport.session</code> is invoked. This middleware is a Passport Strategy invoked on every request. If it finds a serialised user object in the session, it will consider this request authenticated. </li>
+<li>The <code>passport.session</code> middleware calls <code>passport.deserializeUser</code> we've setup. Attaching the loaded user object to the request as <code>req.user</code>.</li>
+</ol>
+<h2>Summary passport methods and middleware</h2>
+<ul>
+<li><code>passport.initialize</code> middleware is invoked on every request. It ensures the session contains a <code>passport.user</code> object, which may be empty.</li>
+<li><code>passport.session</code> middleware is a Passport Strategy which will load the user object onto req.user if a serialised user object was found in the server.</li>
+<li><code>passport.deserializeUser</code> is invoked on every request by <code>passport.session</code>. It enables us to load additional user information on every request. This user object is attached to the request as <code>req.user</code> making it accessible in our request handling.</li>
+<li>Our Local Strategy is only invoked on the route which uses the <code>passport.authenticate</code> middleware.</li>
+<li>Only during this authentication <code>passport.serializeUser</code> is invoked allowing us the specify what user information should be stored in the session.</li>
+</ul>
+<h2>Overview passport methods attached to the request</h2>
+<p>To finish an overview of passport methods accessible within request handlers:</p>
+<ul>
+<li><code>req.login()</code></li>
+<li><code>req.logout()</code></li>
+<li><code>req.isAuthenticated()</code></li>
+<li><code>req.isUnAuthenticated()</code></li>
+</ul>
+
+  </article>
+</div>
+
+<footer id="footer" class="color-inverse"><div class="footer-view inner-content"><div class="susy-cols split-from-break-large split-ratio-1-5">
+  <div class="col">
+    <img src="/images/toon.jpg">
+  </div>
+  <div class="col-last">
+    <p class="intro">Hi. I’m Toon, I’m a freelance JavaScript developer.</p>
+    <p>I write client side and server side JavaScript code.</p>
+    <p>I love <em>backbone</em> and <em>marionette</em> to structure client side applications, use <em>requirejs</em> to keep everything in seperate files, create custom tasks with <em>grunt</em> to build projects, like to write tests with <em>mocha</em> and <em>chai</em>.</p>
+    <p>When it comes to visualizing data, I reach for <em>d3</em>.</p>
+    <p>Do you need some assistance with you application?</p>
+    <p><a href="mailto:hello@toon.io">Contact me</a></p>
+  </div>
+</div>
+<div class="hr"><hr></div>
+  <div class="inner-content">
+    <p class="copyright">©2013 Toon Ketels</p>
+  </div>
+</div>
+</footer>
+  <script>
+    NProgress.configure({ showSpinner: false });
+    NProgress.start();
+  </script>
+  <script src="/js/app/optimized.js"></script>
+
+</body></html>
