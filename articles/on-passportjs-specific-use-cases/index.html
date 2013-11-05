@@ -1,0 +1,158 @@
+<html lang="en" class=""><head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>On passport.js, specific use cases - TOON.IO</title>
+    <meta name="description" content="Hi. I’m Toon, I’m a freelance javascript developer. I specialize in writing great javascript using tools like d3.js, marionette and backbone.js.">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="apple-touch-icon" sizes="114x114" href="apple-touch-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    <meta>
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="http://toon.io/"><!--[if lt IE 7]>
+    <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p><![endif]-->
+    <link href="/css/screen.css" type="text/css" rel="stylesheet" media="screen">
+    <script src="/js/vendor/jquery.min.js"></script>
+    <script src="/js/vendor/nprogress.js"></script>
+</head>
+
+<body class="detail">
+    <div id="contact" class="color-inverse"><div class="contact-view inner-content"><p>Available for projects. Let’s talk.</p>
+<p>Contact:</p>
+<ul class="contact-links">
+  <li>+32 487 17 60 95</li>
+  <li><a href="mailto:hello@toon.io">hello@toon.io</a></li>
+  <li class="tw">
+    <a href="http://twitter.com/toonketels">
+      <span class="icon"></span>
+      <span class="label">Twitter</span>
+    </a>
+  </li>
+  <li class="in">
+    <a href="https://www.linkedin.com/in/toonketels">
+      <span class="icon"></span>
+      <span class="label">LinkedIn</span>
+    </a>
+  </li>
+  <li class="gh">
+    <a href="https://github.com/toonketels">
+      <span class="icon"></span>
+      <span class="label">Github</span>
+    </a>
+  </li>
+</ul></div></div>
+
+    <header id="header" class="color-inverse">
+      <div class="header-detail-view inner-content model-on-passportjs-specific-use-cases">
+        <div class="susy-cols split-from-break-large split-ratio-1-5">
+          <div class="col">
+             <a href="/"><img src="/images/logo.png" alt="Toon.io"></a>
+          </div>
+          <div class="col-last">
+            <ul class="meta">
+              <li>2013.11.05</li>
+              <li>article, expressjs, passportjs, nodejs</li>
+              <li>Toon Ketels</li>
+            </ul>
+            <h2>On passport.js, specific use cases</h2>
+          </div>
+        </div>
+      </div>
+    </header>
+
+<div id="content">
+  <article class="main-detail-view model-on-passportjs-specific-use-cases inner-content">
+    <p><a href="/articles/understanding-passportjs-authentication-flow">In the previous post</a>, I talked about the authentication flow and the flow for subsequent requests using passportjs. This post will cover some specific use cases.</p>
+<h2>What user information to store in the session and what not?</h2>
+<p>It's best to keep the session information small and only attach user information you actually need (note: some user info should be kept - like for instance the user ID, otherwise passport cannot use its Session Strategy).</p>
+<p>However, if you use the <code>deserializeUser</code> method to go and load the user from the db based on the user ID attached to the session, it's better to store the entire user object in the session. This will prevent a roundtrip to the database on every request just to fetch user information.</p>
+<h2>How to split up passportjs configuration between multiple files?</h2>
+<p><a href="https://github.com/jaredhanson/passport-local/blob/master/examples/express3/app.js">In the example</a>, all password configuration and Local Strategy definition was specified in the main <code>app.js</code> file.</p>
+<p>The passport instance we get back from <code>require('passport')</code> is a singleton. So we can just configure express to <em>use the passport middleware</em> in <code>app.js</code> while <em>configuring passport</em> in another file. They all need to <code>require('passport')</code>.</p>
+<p>There's no need to pass the password instance around.</p>
+<h2>What if my form elements are named email and password instead of username and password?</h2>
+<p>Configure which values passport should use from the request body by the options object passed while configuring the Local Strategy.</p>
+<pre><code>passport.use(new LocalStrategy(
+    {
+        usernameField: 'email',
+        passwordField: 'password'    
+    },
+    function verify(email, password, done) {
+
+        findByEmail(email, function(err, user) {
+            if (err) return done(err);
+            if (!user) return done(null, false);
+            passwordHash.compare(password, user.password, function(err, res) {
+                if (err) return done(err);
+                if (!res) return done(null, false);
+                done(null, user);
+            });
+        });
+    }
+));</code></pre>
+<h2>What if I don't like how passport.authenicate redirects the user but want to respond with a JSON response?</h2>
+<p>Don't use <code>passport.authenticate</code> as middleware but invoke it directly in the request handler. We need to manually call <code>login</code> for this to work.</p>
+<pre><code>app.post('/login', function handleLocalAuthentication(req, res, next) {
+
+    passport.authenticate('local', function(err, user, info) {
+        if (err) return next(err);
+        if (!user) {
+            return res.json(403, {
+                message: "no user found"
+            });
+        }
+
+        // Manually establish the session...
+        req.login(user, function(err) {
+            if (err) return next(err);
+            return res.json({
+                message: 'user authenticated',
+            });
+        });
+
+    })(req, res, next);
+};</code></pre>
+<h2>How to restrict access to certain pages?</h2>
+<p>Just define your own middleware to be invoked on certain routes to restrict access. </p>
+<pre><code>// Define it
+module.exports = function restrict(req, res, next) {
+    if (req.isUnAuthenticated()) return req.json(403, {message: 'Access denied, please log in'});
+
+    next();
+}</code></pre>
+<p>Use it when setting up your routes.</p>
+<pre><code>// Use the restrict middleware
+app.get('/route-with-restricted-access', restrict, function(res, res, next) {
+    // Handle request...
+});</code></pre>
+<p>If the user object contains role information, we could make additional checks on which role a user has and depending on that restrict access. </p>
+
+  </article>
+</div>
+
+<footer id="footer" class="color-inverse"><div class="footer-view inner-content"><div class="susy-cols split-from-break-large split-ratio-1-5">
+  <div class="col">
+    <img src="/images/toon.jpg">
+  </div>
+  <div class="col-last">
+    <p class="intro">Hi. I’m Toon, I’m a freelance JavaScript developer.</p>
+    <p>I write client side and server side JavaScript code.</p>
+    <p>I love <em>backbone</em> and <em>marionette</em> to structure client side applications, use <em>requirejs</em> to keep everything in seperate files, create custom tasks with <em>grunt</em> to build projects, like to write tests with <em>mocha</em> and <em>chai</em>.</p>
+    <p>When it comes to visualizing data, I reach for <em>d3</em>.</p>
+    <p>Do you need some assistance with you application?</p>
+    <p><a href="mailto:hello@toon.io">Contact me</a></p>
+  </div>
+</div>
+<div class="hr"><hr></div>
+  <div class="inner-content">
+    <p class="copyright">©2013 Toon Ketels</p>
+  </div>
+</div>
+</footer>
+  <script>
+    NProgress.configure({ showSpinner: false });
+    NProgress.start();
+  </script>
+  <script src="/js/app/optimized.js"></script>
+
+</body></html>

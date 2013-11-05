@@ -65,6 +65,7 @@
     <p>Passport.js is a flexible authentication middleware (allowing users to log in) that can be fully customised and works great with connect/express.</p>
 <p>It is flexible in the sense that it allows for different authentication strategies (think via Twitter, via our own user database - installed via separate modules that can be combined) and it allows us to specify any route or output during authentication.</p>
 <p>The <a href="https://github.com/jaredhanson/passport-local">Local Strategy</a> allows us to authenticate users by looking up their data in the app's database. It has some <a href="https://github.com/jaredhanson/passport-local/blob/master/examples/express3/app.js">great examples how to use it</a>.</p>
+<p>In this post, we walk through the authentication flow, the next post discusses some <a href="/articles/on-passportjs-specific-use-cases">partical use cases using passportjs</a>.</p>
 <h2>Different parts in using passport.js</h2>
 <p>There are three main parts in using passport.js:</p>
 <ul>
@@ -83,7 +84,7 @@
 <li>In case of an Error interacting with our database, we need to invoke <code>done(err)</code>. When we cannot find the user or the passwords do not watch, we invoke <code>done(null, false)</code>. If everything went fine and we want the user to login we invoke <code>done(null, user)</code>.</li>
 <li>Calling <code>done</code> will make the flow jump back into <code>passport.authenticate</code>. It's passed the error, user and additional info object (if defined).</li>
 <li>If the user was passed, the middleware will call <code>req.login</code> (a passport function attached to the request).</li>
-<li>This will call our <code>passport.serializeUser</code> method we've defined earlier. This method can access the user object we passed back to the middleware. It's its job to determine what data from the user object should be stored in the session. The result of the <code>serializeUser</code> method is attached to the session as `req.session.passport.user = { // our serialised user object // }.</li>
+<li>This will call our <code>passport.serializeUser</code> method we've defined earlier. This method can access the user object we passed back to the middleware. It's its job to determine what data from the user object should be stored in the session. The result of the <code>serializeUser</code> method is attached to the session as <code>req.session.passport.user = { // our serialised user object // }</code>.</li>
 <li>The result is also attached to the request as <code>req.user</code>.</li>
 <li>Once done, our requestHandler is invoked. In the example the user is redirected to the homepage.</li>
 </ol>
